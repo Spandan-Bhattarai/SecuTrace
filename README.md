@@ -217,7 +217,3 @@ MIT License - feel free to use this for any purpose.
 ## ⚠️ Disclaimer
 
 This tool is for educational and authorized security research purposes only. Ensure you have proper authorization before analyzing any indicators. The developers are not responsible for any misuse of this tool.
-
----
-
-Made by [nadnap55](https://spandanb.com.np)
