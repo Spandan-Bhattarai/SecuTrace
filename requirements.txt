@@ -1,0 +1,15 @@
+# SecuTrace - Threat Intelligence Platform
+# Python Dependencies
+
+# Web Framework
+Flask==3.0.0
+flask-cors==4.0.0
+
+# HTTP Requests
+requests==2.31.0
+
+# Environment Variables
+python-dotenv==1.0.0
+
+# Production Server (optional)
+gunicorn==21.2.0
