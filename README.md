@@ -2,7 +2,9 @@
 
 A privacy-focused threat intelligence aggregation platform that queries multiple security services to provide comprehensive analysis of IPs, domains, URLs, and file hashes.
 
-![SecuTrace](https://img.shields.io/badge/SecuTrace-Active-success)
+🌐 **Live Demo:** [https://secutrace.onrender.com](https://secutrace.onrender.com)
+
+![SecuTrace](https://img.shields.io/badge/SecuTrace-Live-success)
 ![Python](https://img.shields.io/badge/Python-3.8+-blue)
 ![Flask](https://img.shields.io/badge/Flask-3.0-lightgrey)
 ![License](https://img.shields.io/badge/License-MIT-green)
