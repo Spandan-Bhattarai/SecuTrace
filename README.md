@@ -204,7 +204,7 @@ gunicorn -w 4 -b 0.0.0.0:5000 app:app
 
 ## 👨‍💻 Developer
 
-**Spandan Bhattarai** (nadnap55)
+**Spandan Bhattarai**
 
 - GitHub: [github.com/Spandan-Bhattarai](https://github.com/Spandan-Bhattarai)
 - LinkedIn: [linkedin.com/in/spandan-bhattarai-113209180](https://www.linkedin.com/in/spandan-bhattarai-113209180/)
@@ -220,4 +220,4 @@ This tool is for educational and authorized security research purposes only. Ens
 
 ---
 
-Made with ❤️ by [nadnap55](https://spandanb.com.np)
+Made by [nadnap55](https://spandanb.com.np)
