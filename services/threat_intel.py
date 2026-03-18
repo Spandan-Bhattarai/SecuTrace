@@ -6,7 +6,7 @@ Orchestrates lookups across multiple threat intelligence sources
 import re
 import ipaddress
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 
 from .virustotal import VirusTotalClient
 from .abuseipdb import AbuseIPDBClient
@@ -16,6 +16,11 @@ from .ipinfo import IPInfoClient
 from .urlhaus import URLHausClient
 from .threatfox import ThreatFoxClient
 from .malwarebazaar import MalwareBazaarClient
+from .dshield import DShieldClient
+from .nvd_client import NVDClient
+from .osv_client import OSVClient
+from .correlation_engine import CorrelationEngine
+from .confidence_scoring import ConfidenceScoringEngine
 
 
 class ThreatIntelService:
@@ -33,8 +38,13 @@ class ThreatIntelService:
             'ipinfo': IPInfoClient(),
             'urlhaus': URLHausClient(),
             'threatfox': ThreatFoxClient(),
-            'malwarebazaar': MalwareBazaarClient()
+            'malwarebazaar': MalwareBazaarClient(),
+            'dshield': DShieldClient(),
+            'nvd': NVDClient(),
+            'osv': OSVClient()
         }
+        self.correlation_engine = CorrelationEngine()
+        self.confidence_engine = ConfidenceScoringEngine()
     
     def detect_indicator_type(self, indicator: str) -> str:
         """
@@ -50,6 +60,18 @@ class ThreatIntelService:
         # Check if it's a URL
         if indicator.startswith(('http://', 'https://')):
             return 'url'
+
+        # Check if it's an email
+        if re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', indicator):
+            return 'email'
+
+        # Check if it's a CVE identifier
+        if re.match(r'^CVE-\d{4}-\d{4,}$', indicator, re.IGNORECASE):
+            return 'cve'
+
+        # Heuristic: likely software/package identifier
+        if re.search(r'(==|>=|<=|\bversion\b|\bpkg\b|\blibrary\b)', indicator, re.IGNORECASE):
+            return 'software'
         
         # Check if it's a hash (MD5, SHA1, SHA256)
         if re.match(r'^[a-fA-F0-9]{32}$', indicator):
@@ -68,7 +90,7 @@ class ThreatIntelService:
         """
         results = {}
         
-        with ThreadPoolExecutor(max_workers=10) as executor:
+        with ThreadPoolExecutor(max_workers=min(10, len(self.clients))) as executor:
             futures = {}
             
             for name, client in self.clients.items():
@@ -97,6 +119,18 @@ class ThreatIntelService:
                     }
         
         return results
+
+    def analyze_lookup(self, indicator: str, indicator_type: str) -> Dict[str, Any]:
+        """Run lookup plus correlation and confidence scoring."""
+        results = self.lookup_all(indicator, indicator_type)
+        correlation = self.correlation_engine.build(indicator, indicator_type, results)
+        confidence = self.confidence_engine.compute(results, correlation)
+
+        return {
+            'results': results,
+            'correlation': correlation,
+            'confidence': confidence
+        }
     
     def lookup_single(self, indicator: str, indicator_type: str, source: str) -> Dict[str, Any]:
         """
@@ -128,12 +162,13 @@ class ThreatIntelService:
         """
         Get the configuration status of all sources
         """
-        sources = []
-        for name, client in self.clients.items():
-            sources.append({
+        return [
+            {
                 'name': name,
                 'display_name': client.display_name,
                 'configured': client.is_configured(),
-                'supports': client.supported_types
-            })
-        return sources
+                'supports': client.supported_types,
+                'phase': 'active'
+            }
+            for name, client in self.clients.items()
+        ]

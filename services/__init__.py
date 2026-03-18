@@ -8,6 +8,11 @@ from .ipinfo import IPInfoClient
 from .urlhaus import URLHausClient
 from .threatfox import ThreatFoxClient
 from .malwarebazaar import MalwareBazaarClient
+from .dshield import DShieldClient
+from .nvd_client import NVDClient
+from .osv_client import OSVClient
+from .correlation_engine import CorrelationEngine
+from .confidence_scoring import ConfidenceScoringEngine
 
 __all__ = [
     'VirusTotalClient',
@@ -17,5 +22,10 @@ __all__ = [
     'IPInfoClient',
     'URLHausClient',
     'ThreatFoxClient',
-    'MalwareBazaarClient'
+    'MalwareBazaarClient',
+    'DShieldClient',
+    'NVDClient',
+    'OSVClient',
+    'CorrelationEngine',
+    'ConfidenceScoringEngine'
 ]

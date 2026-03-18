@@ -63,13 +63,15 @@ def lookup():
     # Determine indicator type
     indicator_type = threat_intel.detect_indicator_type(indicator)
     
-    # Run all lookups
-    results = threat_intel.lookup_all(indicator, indicator_type)
+    # Run lookups with correlation and confidence scoring
+    analysis = threat_intel.analyze_lookup(indicator, indicator_type)
     
     return jsonify({
         'indicator': indicator,
         'type': indicator_type,
-        'results': results
+        'results': analysis['results'],
+        'correlation': analysis['correlation'],
+        'confidence': analysis['confidence']
     })
 
 
