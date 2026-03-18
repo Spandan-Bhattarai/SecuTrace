@@ -1,219 +1,90 @@
-# 🛡️ SecuTrace - Free Threat Intelligence Platform
+# SecuTrace - Threat Intelligence Platform
 
-A privacy-focused threat intelligence aggregation platform that queries multiple security services to provide comprehensive analysis of IPs, domains, URLs, and file hashes.
+SecuTrace is a privacy-focused threat intelligence aggregation platform that queries multiple security services and returns a consolidated risk view for IPs, domains, URLs, hashes, CVEs, and software package indicators.
 
-🌐 **Live Demo:** [https://secutrace.onrender.com](https://secutrace.onrender.com)
+## Features
 
-![SecuTrace](https://img.shields.io/badge/SecuTrace-Live-success)
-![Python](https://img.shields.io/badge/Python-3.8+-blue)
-![Flask](https://img.shields.io/badge/Flask-3.0-lightgrey)
-![License](https://img.shields.io/badge/License-MIT-green)
+- Multi-source lookups with parallel execution
+- Correlation engine (entity extraction + graph relationships)
+- Confidence scoring engine (weighted source scoring + context boost)
+- Quick external links and per-source full result links
+- No server-side query storage
 
-## ✨ Features
+## Active Integrations
 
-- **Multi-Source Intelligence**: Query 8+ threat intelligence sources simultaneously
-- **Consensus-Based Scoring**: Aggregated threat level based on multiple platform agreement
-- **Quick External Links**: One-click access to IBM X-Force, AbuseIPDB, and VirusTotal
-- **Full Result Links**: Direct links to view detailed results on each platform
-- **Privacy-Focused**: No data storage, no tracking, no accounts required
-- **Modern Dark UI**: Clean, responsive interface with Bootstrap 5
-- **Search History**: Local browser storage for recent lookups (clearable)
-- **Free Services**: 3 services work without any API keys
+| Service | Indicator Support | API Key |
+|---|---|---|
+| VirusTotal | IP, domain, URL, hash | Required |
+| AbuseIPDB | IP | Required |
+| Shodan | IP | Required |
+| AlienVault OTX | IP, domain, URL, hash | Required |
+| IPInfo | IP | Required |
+| URLhaus | URL, domain | Via THREATFOX_API_KEY |
+| ThreatFox | IP, domain, URL, hash | Required |
+| MalwareBazaar | hash | Not required |
+| DShield | IP | Not required |
+| NVD | CVE/software | Not required |
+| OSV | CVE/software | Not required |
 
-## 📊 Integrated Services
+## Why DShield Instead of Talos
 
-| Service | Type | API Key Required | Full Result Link |
-|---------|------|------------------|------------------|
-| VirusTotal | Malware/Threat DB | Yes | ✅ |
-| AbuseIPDB | IP Reputation | Yes | ✅ |
-| Shodan | Infrastructure Recon | Yes | ✅ |
-| AlienVault OTX | Threat Intelligence | Yes | ✅ |
-| IPInfo | IP Geolocation | Yes | ✅ |
-| URLhaus | Malicious URLs | Yes* | ✅ |
-| ThreatFox | IOC Database | Yes* | ✅ |
-| MalwareBazaar | Malware Samples | No | ✅ |
+Talos public endpoints are commonly blocked by Cloudflare for automated server-side requests. DShield provides a stable free IP intelligence endpoint suitable for backend automation.
 
-*URLhaus and ThreatFox share the same abuse.ch Auth-Key
+## Quick Start
 
-### Quick External Search
-
-Additional platforms accessible via quick search buttons:
-- **IBM X-Force Exchange** - Threat intelligence platform
-- **AbuseIPDB** - IP abuse reporting database
-- **VirusTotal** - File and URL analysis
-
-## 🚀 Quick Start
-
-### 1. Clone & Install
+1. Install dependencies:
 
 ```bash
-cd soar
 pip install -r requirements.txt
 ```
 
-### 2. Configure API Keys
+2. Configure environment:
 
 ```bash
-# Copy the example environment file
 cp .env.example .env
-
-# Edit .env and add your API keys (see .env.example for instructions)
 ```
 
-### 3. Run the Application
+3. Run locally:
 
 ```bash
 python app.py
 ```
 
-### 4. Open in Browser
+4. Open:
 
-Navigate to `http://localhost:5000`
-
-## 📖 Usage
-
-1. Enter an IP address, domain, URL, or hash in the search box
-2. Click **Analyze** to query all configured services
-3. View the consensus-based threat score (HIGH/MEDIUM/LOW)
-4. Use **Quick Search** buttons to check IBM X-Force, AbuseIPDB, or VirusTotal
-5. Click **Full Result** on any source card to view details on that platform
-6. Expand source cards for detailed information
-
-### Supported Indicator Types
-
-- **IP Addresses**: `8.8.8.8`, `192.168.1.1`
-- **Domains**: `example.com`, `malware.domain.net`
-- **URLs**: `https://example.com/path/to/file`
-- **MD5 Hashes**: `d41d8cd98f00b204e9800998ecf8427e`
-- **SHA1 Hashes**: `da39a3ee5e6b4b0d3255bfef95601890afd80709`
-- **SHA256 Hashes**: `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`
-
-### Threat Scoring
-
-SecuTrace uses consensus-based threat scoring:
-- **HIGH RISK** (Red): 2+ sources report high threat level
-- **MEDIUM RISK** (Blue): 2+ sources report medium, or 1 reports high
-- **LOW RISK** (Green): Few or no concerning indicators
-
-## 📁 Project Structure
-
-```
-soar/
-├── app.py                  # Main Flask application
-├── requirements.txt        # Python dependencies
-├── .env.example           # Environment template with instructions
-├── .env                   # Your API keys (create this)
-├── README.md              # This file
-├── services/              # Threat intelligence clients
-│   ├── __init__.py
-│   ├── base_client.py     # Base class for clients
-│   ├── threat_intel.py    # Main orchestration service
-│   ├── virustotal.py      # VirusTotal integration
-│   ├── abuseipdb.py       # AbuseIPDB integration
-│   ├── shodan_client.py   # Shodan integration
-│   ├── alienvault.py      # AlienVault OTX integration
-│   ├── ipinfo.py          # IPInfo integration
-│   ├── urlhaus.py         # URLhaus integration
-│   ├── threatfox.py       # ThreatFox integration
-│   └── malwarebazaar.py   # MalwareBazaar integration
-└── templates/
-    ├── index.html         # Main dashboard
-    ├── about.html         # About page
-    ├── privacy.html       # Privacy policy
-    ├── cookies.html       # Cookie policy
-    └── terms.html         # Terms of service
+```text
+http://localhost:5000
 ```
 
-## 🔌 API Endpoints
+## Configuration
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/` | GET | Main dashboard |
-| `/about` | GET | About SecuTrace |
-| `/privacy` | GET | Privacy policy |
-| `/cookies` | GET | Cookie policy |
-| `/terms` | GET | Terms of service |
-| `/api/lookup` | POST | Query all sources for an indicator |
-| `/api/lookup/<source>` | POST | Query a specific source |
-| `/api/sources` | GET | Get status of all configured sources |
+Use [.env.example](.env.example) and set keys only for the services you want.
 
-### Example API Usage
+Required for full coverage:
+- VIRUSTOTAL_API_KEY
+- ABUSEIPDB_API_KEY
+- SHODAN_API_KEY
+- ALIENVAULT_OTX_API_KEY
+- IPINFO_API_KEY
+- THREATFOX_API_KEY
 
-```bash
-# Full lookup
-curl -X POST http://localhost:5000/api/lookup \
-  -H "Content-Type: application/json" \
-  -d '{"indicator": "8.8.8.8"}'
+No-key connectors:
+- MalwareBazaar
+- DShield
+- NVD
+- OSV
 
-# Single source lookup
-curl -X POST http://localhost:5000/api/lookup/virustotal \
-  -H "Content-Type: application/json" \
-  -d '{"indicator": "evil.com"}'
-```
+## API Endpoints
 
-## ⚙️ Configuration
+- `GET /` - UI
+- `POST /api/lookup` - lookup across all active sources
+- `POST /api/lookup/<source>` - lookup a single source
+- `GET /api/sources` - source status
 
-Copy `.env.example` to `.env` and add your API keys. Each service has instructions in the example file.
+## Deployment
 
-### Minimum Setup (Free)
+Render config is included in `render.yaml`.
 
-MalwareBazaar works without any API key.
+## Security Note
 
-### Recommended Setup
-
-For best results, configure:
-1. VirusTotal
-2. AbuseIPDB
-3. AlienVault OTX
-4. THREATFOX_API_KEY (works for both URLhaus and ThreatFox)
-
-## 🔒 Privacy
-
-SecuTrace is built with privacy in mind:
-- **No server-side data storage** - Queries processed in memory only
-- **No accounts required** - Use anonymously
-- **No tracking** - No analytics or behavioral profiling
-- **Local history only** - Search history stored in browser localStorage
-- **Clearable data** - One-click history deletion
-
-## 🚀 Deployment
-
-### Deploy to Render (Recommended)
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
-
-**One-click deployment:**
-1. Fork this repository to your GitHub account
-2. Go to [render.com](https://render.com) → New → Blueprint
-3. Connect your forked repo
-4. Render will auto-detect `render.yaml` and configure everything
-5. Add your API keys in the Environment section
-6. Deploy!
-
-**Manual setup:**
-1. New Web Service → Connect your repo
-2. Build Command: `pip install -r requirements.txt`
-3. Start Command: `gunicorn app:app`
-4. Add environment variables from `.env.example`
-
-### Local Production
-
-```bash
-gunicorn -w 4 -b 0.0.0.0:5000 app:app
-```
-
-## 👨‍💻 Developer
-
-**Spandan Bhattarai**
-
-- GitHub: [github.com/Spandan-Bhattarai](https://github.com/Spandan-Bhattarai)
-- LinkedIn: [linkedin.com/in/spandan-bhattarai-113209180](https://www.linkedin.com/in/spandan-bhattarai-113209180/)
-- Portfolio: [spandanb.com.np](https://spandanb.com.np)
-
-## 📄 License
-
-MIT License - feel free to use this for any purpose.
-
-## ⚠️ Disclaimer
-
-This tool is for educational and authorized security research purposes only. Ensure you have proper authorization before analyzing any indicators. The developers are not responsible for any misuse of this tool.
+Do not commit real API keys in `.env` to git. Rotate any key that has already been committed.
