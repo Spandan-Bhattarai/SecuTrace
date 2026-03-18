@@ -47,10 +47,21 @@
             color: var(--accent-blue) !important;
         }
 
-        .search-container {
-            max-width: 800px;
+        .page-shell {
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 30px 22px;
+        }
+
+        .search-container {
+            max-width: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .sidebar-sticky {
+            position: sticky;
+            top: 90px;
         }
 
         .search-box {
@@ -204,54 +215,115 @@
 
         .quick-links-grid {
             display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 66vh;
+            overflow-y: auto;
+            padding-right: 4px;
         }
 
         .quick-link-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.86rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-input);
+            color: var(--text-primary);
+        }
+
+        .quick-link-btn:hover {
+            border-color: var(--accent-blue);
+            background-color: rgba(88, 166, 255, 0.12);
+            color: var(--accent-blue);
+        }
+
+        .quick-link-label {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 12px 20px;
+            min-width: 0;
+        }
+
+        .quick-links-hint {
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            margin-bottom: 12px;
+            line-height: 1.45;
+        }
+
+        .quick-link-empty {
+            color: var(--text-secondary);
+            font-size: 0.86rem;
+            background-color: var(--bg-input);
+            border: 1px dashed var(--border-color);
+            padding: 12px;
             border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-decoration: none;
-            transition: all 0.2s;
-            border: 1px solid transparent;
         }
 
-        .quick-link-btn.xforce {
-            background-color: rgba(41, 128, 185, 0.15);
-            color: #3498db;
-            border-color: rgba(41, 128, 185, 0.3);
+        .confidence-graph {
+            margin-top: 16px;
+            text-align: left;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px;
         }
 
-        .quick-link-btn.xforce:hover {
-            background-color: rgba(41, 128, 185, 0.3);
-            border-color: #3498db;
+        .confidence-graph-title {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 10px;
         }
 
-        .quick-link-btn.abuseipdb {
-            background-color: rgba(231, 76, 60, 0.15);
-            color: #e74c3c;
-            border-color: rgba(231, 76, 60, 0.3);
+        .confidence-bar-row {
+            display: grid;
+            grid-template-columns: 110px 1fr 44px;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
         }
 
-        .quick-link-btn.abuseipdb:hover {
-            background-color: rgba(231, 76, 60, 0.3);
-            border-color: #e74c3c;
+        .confidence-bar-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: capitalize;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        .quick-link-btn.virustotal {
-            background-color: rgba(46, 134, 193, 0.15);
-            color: #58a6ff;
-            border-color: rgba(46, 134, 193, 0.3);
+        .confidence-bar-track {
+            width: 100%;
+            height: 8px;
+            background-color: var(--bg-dark);
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
         }
 
-        .quick-link-btn.virustotal:hover {
-            background-color: rgba(46, 134, 193, 0.3);
-            border-color: #58a6ff;
+        .confidence-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1f6feb, #58a6ff);
+        }
+
+        .confidence-bar-value {
+            font-size: 0.78rem;
+            color: var(--text-primary);
+            text-align: right;
+        }
+
+        .confidence-meta {
+            margin-top: 6px;
+            color: var(--text-secondary);
+            font-size: 0.78rem;
         }
 
         .info-grid {
@@ -457,6 +529,20 @@
             max-width: 600px;
             margin: 0 auto;
         }
+
+        @media (max-width: 991px) {
+            .page-shell {
+                padding: 18px 14px;
+            }
+
+            .sidebar-sticky {
+                position: static;
+            }
+
+            .quick-links-grid {
+                max-height: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -484,42 +570,60 @@
         </div>
     </nav>
 
-    <div class="container search-container">
-        <div class="hero-section">
-            <h1><i class="bi bi-shield-lock-fill me-2"></i>SecuTrace</h1>
-            <p>Free threat intelligence lookup. Analyze IPs, domains, URLs, and file hashes across 8+ security databases instantly. Privacy-focused with no data storage.</p>
-        </div>
-
-        <div class="search-box">
-            <form id="searchForm">
-                <div class="row g-3">
-                    <div class="col-md-9">
-                        <input type="text" class="form-control search-input" id="indicator" 
-                               placeholder="Enter IP, domain, URL, or hash..." 
-                               autocomplete="off">
-                    </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-primary btn-search w-100" id="searchBtn">
-                            <i class="bi bi-search me-2"></i>Analyze
-                        </button>
+    <div class="container-fluid page-shell">
+        <div class="row g-4">
+            <aside class="col-lg-3 order-2 order-lg-1">
+                <div class="sidebar-sticky">
+                    <div class="quick-links-section">
+                        <h6><i class="bi bi-lightning-charge me-2"></i>Quick Search</h6>
+                        <div class="quick-links-hint">Search external platforms directly for the current indicator. Services include integrated and roadmap providers.</div>
+                        <div id="quickLinksSidebar" class="quick-links-grid">
+                            <div class="quick-link-empty">Run an analysis to populate quick search links.</div>
+                        </div>
                     </div>
                 </div>
-            </form>
-            <div class="sources-status" id="sourcesStatus"></div>
-        </div>
+            </aside>
 
-        <div id="results"></div>
+            <main class="col-lg-9 order-1 order-lg-2">
+                <div class="search-container">
+                    <div class="hero-section">
+                        <h1><i class="bi bi-shield-lock-fill me-2"></i>SecuTrace</h1>
+                        <p>Free threat intelligence lookup. Analyze IPs, domains, URLs, and file hashes across 8+ security databases instantly. Privacy-focused with no data storage.</p>
+                    </div>
 
-        <div class="mt-4" id="historySection" style="display: none;">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="text-secondary mb-0">
-                    <i class="bi bi-clock-history me-2"></i>Recent Lookups
-                </h5>
-                <button class="clear-history-btn" onclick="clearHistory()">
-                    <i class="bi bi-trash me-1"></i>Clear History
-                </button>
-            </div>
-            <div id="history"></div>
+                    <div class="search-box">
+                        <form id="searchForm">
+                            <div class="row g-3">
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control search-input" id="indicator" 
+                                           placeholder="Enter IP, domain, URL, or hash..." 
+                                           autocomplete="off">
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-primary btn-search w-100" id="searchBtn">
+                                        <i class="bi bi-search me-2"></i>Analyze
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="sources-status" id="sourcesStatus"></div>
+                    </div>
+
+                    <div id="results"></div>
+
+                    <div class="mt-4" id="historySection" style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="text-secondary mb-0">
+                                <i class="bi bi-clock-history me-2"></i>Recent Lookups
+                            </h5>
+                            <button class="clear-history-btn" onclick="clearHistory()">
+                                <i class="bi bi-trash me-1"></i>Clear History
+                            </button>
+                        </div>
+                        <div id="history"></div>
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
 
@@ -584,21 +688,51 @@
         let currentIndicator = '';
         let currentIndicatorType = '';
 
+        const QUICK_SEARCH_OPTIONS = [
+            { key: 'xforce', label: 'IBM X-Force', icon: 'bi-shield-fill-exclamation', supports: ['ip', 'domain', 'url', 'md5', 'sha1', 'sha256', 'cve', 'software'] },
+            { key: 'virustotal', label: 'VirusTotal', icon: 'bi-virus', supports: ['ip', 'domain', 'url', 'md5', 'sha1', 'sha256'] },
+            { key: 'abuseipdb', label: 'AbuseIPDB', icon: 'bi-exclamation-triangle-fill', supports: ['ip'] },
+            { key: 'talos', label: 'Cisco Talos', icon: 'bi-shield-check', supports: ['ip', 'domain', 'email'] },
+            { key: 'greynoise', label: 'GreyNoise', icon: 'bi-broadcast-pin', supports: ['ip'] },
+            { key: 'pulsedive', label: 'Pulsedive', icon: 'bi-diagram-3', supports: ['ip', 'domain', 'url', 'md5', 'sha1', 'sha256'] },
+            { key: 'securitytrails', label: 'SecurityTrails', icon: 'bi-globe2', supports: ['domain'] },
+            { key: 'censys', label: 'Censys', icon: 'bi-hdd-network', supports: ['ip', 'domain'] },
+            { key: 'zoomeye', label: 'ZoomEye', icon: 'bi-eye', supports: ['ip', 'domain', 'url'] },
+            { key: 'binaryedge', label: 'BinaryEdge', icon: 'bi-cpu', supports: ['ip', 'domain'] },
+            { key: 'hybrid_analysis', label: 'Hybrid Analysis', icon: 'bi-bug', supports: ['url', 'md5', 'sha1', 'sha256'] },
+            { key: 'anyrun', label: 'ANY.RUN', icon: 'bi-play-circle', supports: ['url', 'md5', 'sha1', 'sha256'] },
+            { key: 'joe_sandbox', label: 'Joe Sandbox', icon: 'bi-box', supports: ['url', 'md5', 'sha1', 'sha256'] },
+            { key: 'intezer', label: 'Intezer', icon: 'bi-bezier2', supports: ['md5', 'sha1', 'sha256'] },
+            { key: 'vulners', label: 'Vulners', icon: 'bi-shield-exclamation', supports: ['ip', 'domain', 'cve', 'software'] },
+            { key: 'nvd', label: 'NVD', icon: 'bi-file-earmark-binary', supports: ['cve', 'software', 'domain', 'url'] },
+            { key: 'cisa_kev', label: 'CISA KEV', icon: 'bi-list-check', supports: ['cve', 'software'] },
+            { key: 'osv', label: 'OSV.dev', icon: 'bi-code-slash', supports: ['cve', 'software', 'md5', 'sha1', 'sha256'] },
+            { key: 'dshield', label: 'DShield', icon: 'bi-shield', supports: ['ip'] },
+            { key: 'spamhaus', label: 'Spamhaus', icon: 'bi-envelope-x', supports: ['ip', 'domain'] },
+            { key: 'ipqualityscore', label: 'IPQualityScore', icon: 'bi-sliders', supports: ['ip'] },
+            { key: 'scamalytics', label: 'Scamalytics', icon: 'bi-activity', supports: ['ip'] },
+            { key: 'riskiq', label: 'RiskIQ', icon: 'bi-search-heart', supports: ['ip', 'domain', 'url'] },
+            { key: 'haveibeenpwned', label: 'Have I Been Pwned', icon: 'bi-person-x', supports: ['email', 'domain'] },
+            { key: 'misp', label: 'MISP', icon: 'bi-share', supports: ['ip', 'domain', 'url', 'md5', 'sha1', 'sha256'] },
+            { key: 'opencti', label: 'OpenCTI', icon: 'bi-diagram-2-fill', supports: ['ip', 'domain', 'url', 'md5', 'sha1', 'sha256', 'cve', 'software'] }
+        ];
+
         // Generate external URL for each source
         function getExternalUrl(source, indicator, indicatorType) {
             const encodedIndicator = encodeURIComponent(indicator);
+            const type = (indicatorType || '').toLowerCase();
             
             switch(source) {
                 case 'virustotal':
-                    if (indicatorType === 'IP') {
+                    if (type === 'ip') {
                         return `https://www.virustotal.com/gui/ip-address/${indicator}`;
-                    } else if (indicatorType === 'Domain') {
+                    } else if (type === 'domain') {
                         return `https://www.virustotal.com/gui/domain/${indicator}`;
-                    } else if (indicatorType === 'URL') {
+                    } else if (type === 'url') {
                         // VirusTotal uses base64 URL ID
                         const urlId = btoa(indicator).replace(/=/g, '');
                         return `https://www.virustotal.com/gui/url/${urlId}`;
-                    } else if (indicatorType === 'Hash') {
+                    } else if (type === 'md5' || type === 'sha1' || type === 'sha256') {
                         return `https://www.virustotal.com/gui/file/${indicator}`;
                     }
                     return `https://www.virustotal.com/gui/search/${encodedIndicator}`;
@@ -610,13 +744,13 @@
                     return `https://www.shodan.io/host/${indicator}`;
                 
                 case 'alienvault':
-                    if (indicatorType === 'IP') {
+                    if (type === 'ip') {
                         return `https://otx.alienvault.com/indicator/ip/${indicator}`;
-                    } else if (indicatorType === 'Domain') {
+                    } else if (type === 'domain') {
                         return `https://otx.alienvault.com/indicator/domain/${indicator}`;
-                    } else if (indicatorType === 'URL') {
+                    } else if (type === 'url') {
                         return `https://otx.alienvault.com/indicator/url/${encodedIndicator}`;
-                    } else if (indicatorType === 'Hash') {
+                    } else if (type === 'md5' || type === 'sha1' || type === 'sha256') {
                         return `https://otx.alienvault.com/indicator/file/${indicator}`;
                     }
                     return `https://otx.alienvault.com/browse/global/pulses?q=${encodedIndicator}`;
@@ -632,6 +766,15 @@
                 
                 case 'malwarebazaar':
                     return `https://bazaar.abuse.ch/sample/${indicator}/`;
+
+                case 'dshield':
+                    return `https://www.dshield.org/ipinfo.html?ip=${encodedIndicator}`;
+
+                case 'nvd':
+                    return `https://nvd.nist.gov/vuln/search/results?query=${encodedIndicator}&search_type=all`;
+
+                case 'osv':
+                    return `https://osv.dev/list?q=${encodedIndicator}`;
                 
                 default:
                     return null;
@@ -641,16 +784,17 @@
         // Generate quick link URLs
         function getQuickLinkUrl(service, indicator, indicatorType) {
             const encodedIndicator = encodeURIComponent(indicator);
+            const type = (indicatorType || '').toLowerCase();
             
             switch(service) {
                 case 'xforce':
-                    if (indicatorType === 'IP') {
+                    if (type === 'ip') {
                         return `https://exchange.xforce.ibmcloud.com/ip/${indicator}`;
-                    } else if (indicatorType === 'Domain') {
+                    } else if (type === 'domain') {
                         return `https://exchange.xforce.ibmcloud.com/url/${indicator}`;
-                    } else if (indicatorType === 'URL') {
+                    } else if (type === 'url') {
                         return `https://exchange.xforce.ibmcloud.com/url/${encodedIndicator}`;
-                    } else if (indicatorType === 'Hash') {
+                    } else if (type === 'md5' || type === 'sha1' || type === 'sha256') {
                         return `https://exchange.xforce.ibmcloud.com/malware/${indicator}`;
                     }
                     return `https://exchange.xforce.ibmcloud.com/search/${encodedIndicator}`;
@@ -659,49 +803,159 @@
                     return `https://www.abuseipdb.com/check/${indicator}`;
                 
                 case 'virustotal':
-                    if (indicatorType === 'IP') {
+                    if (type === 'ip') {
                         return `https://www.virustotal.com/gui/ip-address/${indicator}`;
-                    } else if (indicatorType === 'Domain') {
+                    } else if (type === 'domain') {
                         return `https://www.virustotal.com/gui/domain/${indicator}`;
-                    } else if (indicatorType === 'URL') {
+                    } else if (type === 'url') {
                         const urlId = btoa(indicator).replace(/=/g, '');
                         return `https://www.virustotal.com/gui/url/${urlId}`;
-                    } else if (indicatorType === 'Hash') {
+                    } else if (type === 'md5' || type === 'sha1' || type === 'sha256') {
                         return `https://www.virustotal.com/gui/file/${indicator}`;
                     }
                     return `https://www.virustotal.com/gui/search/${encodedIndicator}`;
+
+                case 'talos':
+                    return `https://talosintelligence.com/reputation_center/lookup?search=${encodedIndicator}`;
+
+                case 'greynoise':
+                    return `https://viz.greynoise.io/ip/${indicator}`;
+
+                case 'pulsedive':
+                    return `https://pulsedive.com/indicator/?ioc=${encodedIndicator}`;
+
+                case 'securitytrails':
+                    return `https://securitytrails.com/domain/${indicator}`;
+
+                case 'censys':
+                    return `https://search.censys.io/search?resource=hosts&q=${encodedIndicator}`;
+
+                case 'zoomeye':
+                    return `https://www.zoomeye.hk/searchResult?q=${encodedIndicator}`;
+
+                case 'binaryedge':
+                    return `https://app.binaryedge.io/services/query?query=${encodedIndicator}`;
+
+                case 'hybrid_analysis':
+                    return `https://www.hybrid-analysis.com/search?query=${encodedIndicator}`;
+
+                case 'anyrun':
+                    return `https://app.any.run/submissions/#search/${encodedIndicator}`;
+
+                case 'joe_sandbox':
+                    return `https://www.joesandbox.com/search?q=${encodedIndicator}`;
+
+                case 'intezer':
+                    return `https://analyze.intezer.com/search?query=${encodedIndicator}`;
+
+                case 'vulners':
+                    return `https://vulners.com/search?query=${encodedIndicator}`;
+
+                case 'nvd':
+                    return `https://nvd.nist.gov/vuln/search/results?query=${encodedIndicator}&search_type=all`;
+
+                case 'cisa_kev':
+                    return `https://www.cisa.gov/known-exploited-vulnerabilities-catalog?search_api_fulltext=${encodedIndicator}`;
+
+                case 'osv':
+                    return `https://osv.dev/list?q=${encodedIndicator}`;
+
+                case 'dshield':
+                    return `https://www.dshield.org/ipinfo.html?ip=${encodedIndicator}`;
+
+                case 'spamhaus':
+                    return `https://check.spamhaus.org/listed/?searchterm=${encodedIndicator}`;
+
+                case 'ipqualityscore':
+                    return `https://www.ipqualityscore.com/free-ip-lookup-proxy-vpn-test/lookup/${indicator}`;
+
+                case 'scamalytics':
+                    return `https://scamalytics.com/ip/${indicator}`;
+
+                case 'riskiq':
+                    return `https://community.riskiq.com/search/${encodedIndicator}`;
+
+                case 'haveibeenpwned':
+                    return `https://haveibeenpwned.com/?search=${encodedIndicator}`;
+
+                case 'misp':
+                    return `https://www.misp-project.org/`;
+
+                case 'opencti':
+                    return `https://www.opencti.io/en/`;
                 
                 default:
                     return null;
             }
         }
 
-        // Generate quick links HTML
-        function renderQuickLinks(indicator, indicatorType) {
-            const xforceUrl = getQuickLinkUrl('xforce', indicator, indicatorType);
-            const abuseipdbUrl = getQuickLinkUrl('abuseipdb', indicator, indicatorType);
-            const virustotalUrl = getQuickLinkUrl('virustotal', indicator, indicatorType);
-            
-            return `
-                <div class="quick-links-section">
-                    <h6><i class="bi bi-lightning-charge me-2"></i>Quick Search on External Platforms</h6>
-                    <div class="quick-links-grid">
-                        <a href="${xforceUrl}" target="_blank" rel="noopener noreferrer" class="quick-link-btn xforce">
-                            <i class="bi bi-shield-fill-exclamation"></i>
-                            IBM X-Force Exchange
-                            <i class="bi bi-box-arrow-up-right"></i>
-                        </a>
-                        <a href="${abuseipdbUrl}" target="_blank" rel="noopener noreferrer" class="quick-link-btn abuseipdb">
-                            <i class="bi bi-exclamation-triangle-fill"></i>
-                            AbuseIPDB
-                            <i class="bi bi-box-arrow-up-right"></i>
-                        </a>
-                        <a href="${virustotalUrl}" target="_blank" rel="noopener noreferrer" class="quick-link-btn virustotal">
-                            <i class="bi bi-virus"></i>
-                            VirusTotal
-                            <i class="bi bi-box-arrow-up-right"></i>
-                        </a>
+        function renderQuickLinksSidebar(indicator, indicatorType) {
+            const container = document.getElementById('quickLinksSidebar');
+            const type = (indicatorType || '').toLowerCase();
+
+            if (!indicator || !type) {
+                container.innerHTML = '<div class="quick-link-empty">Run an analysis to populate quick search links.</div>';
+                return;
+            }
+
+            const links = QUICK_SEARCH_OPTIONS
+                .filter(option => option.supports.includes(type))
+                .map(option => {
+                    const url = getQuickLinkUrl(option.key, indicator, type);
+                    return url ? { ...option, url } : null;
+                })
+                .filter(Boolean);
+
+            if (links.length === 0) {
+                container.innerHTML = `<div class="quick-link-empty">No quick links available for type: ${escapeHtml(type)}</div>`;
+                return;
+            }
+
+            container.innerHTML = links.map(link => `
+                <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="quick-link-btn" title="Open ${link.label}">
+                    <span class="quick-link-label"><i class="bi ${link.icon}"></i>${link.label}</span>
+                    <i class="bi bi-box-arrow-up-right"></i>
+                </a>
+            `).join('');
+        }
+
+        function renderConfidenceGraph(confidence) {
+            const weighted = confidence?.components?.weighted_scores || {};
+            const contextBoost = Number(confidence?.components?.context_boost || 0);
+            const rows = Object.entries(weighted)
+                .sort((a, b) => (b[1].weighted_score || 0) - (a[1].weighted_score || 0))
+                .slice(0, 8);
+
+            if (rows.length === 0) {
+                return '';
+            }
+
+            let barsHtml = rows.map(([source, meta]) => {
+                const normalized = Number(meta.normalized_score || 0);
+                const width = Math.max(2, Math.min(100, normalized));
+                return `
+                    <div class="confidence-bar-row">
+                        <div class="confidence-bar-label">${escapeHtml(source.replace(/_/g, ' '))}</div>
+                        <div class="confidence-bar-track"><div class="confidence-bar-fill" style="width:${width}%;"></div></div>
+                        <div class="confidence-bar-value">${normalized.toFixed(0)}</div>
                     </div>
+                `;
+            }).join('');
+
+            const boostPercent = Math.max(0, Math.min(100, (contextBoost / 25) * 100));
+            barsHtml += `
+                <div class="confidence-bar-row">
+                    <div class="confidence-bar-label">graph boost</div>
+                    <div class="confidence-bar-track"><div class="confidence-bar-fill" style="width:${boostPercent}%;"></div></div>
+                    <div class="confidence-bar-value">+${contextBoost.toFixed(1)}</div>
+                </div>
+            `;
+
+            return `
+                <div class="confidence-graph">
+                    <div class="confidence-graph-title">Confidence Breakdown (Graph)</div>
+                    ${barsHtml}
+                    <div class="confidence-meta">Bars show normalized source scores; graph boost reflects correlation impact.</div>
                 </div>
             `;
         }
@@ -710,6 +964,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadSourcesStatus();
             renderHistory();
+            renderQuickLinksSidebar('', '');
         });
 
         // Clear history function
@@ -723,9 +978,10 @@
             try {
                 const response = await fetch('/api/sources');
                 const sources = await response.json();
+                const activeSources = sources.filter(source => source.phase !== 'planned');
                 
                 const container = document.getElementById('sourcesStatus');
-                container.innerHTML = sources.map(source => `
+                container.innerHTML = activeSources.map(source => `
                     <div class="source-status-item ${source.configured ? 'configured' : 'not-configured'}">
                         <i class="bi bi-${source.configured ? 'check-circle-fill' : 'x-circle'}"></i>
                         ${source.display_name}
@@ -773,6 +1029,9 @@
                 // Store current lookup state
                 currentIndicator = data.indicator;
                 currentIndicatorType = data.type;
+
+                // Refresh left sidebar quick links
+                renderQuickLinksSidebar(currentIndicator, currentIndicatorType);
                 
                 // Add to history
                 addToHistory(indicator, data.type);
@@ -819,6 +1078,13 @@
                     }
                 }
             });
+
+            const confidence = data.confidence || null;
+            const confidenceClass = confidence && confidence.verdict === 'Malicious'
+                ? 'threat-high'
+                : confidence && confidence.verdict === 'Suspicious'
+                    ? 'threat-medium'
+                    : 'threat-low';
             
             // Determine overall threat level based on consensus
             // If 2+ platforms flag as HIGH -> Overall HIGH (red)
@@ -857,12 +1123,31 @@
                     </div>
                 </div>
             `;
+
+            if (confidence) {
+                html += `
+                    <div class="overall-score" style="padding: 22px;">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <div>
+                                <div class="text-secondary" style="font-size: 0.85rem; text-transform: uppercase;">Confidence Engine</div>
+                                <div class="${confidenceClass}" style="font-size: 1.15rem; font-weight: 700; display: inline-block; padding: 4px 12px; border-radius: 8px; margin-top: 6px;">
+                                    ${confidence.verdict}
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <div class="${confidenceClass}" style="font-size: 2rem; font-weight: 700;">${confidence.final_score}</div>
+                                <small class="text-secondary">${confidence.category}</small>
+                            </div>
+                        </div>
+                        ${renderConfidenceGraph(confidence)}
+                    </div>
+                `;
+            }
             
-            // Add quick links section
-            html += renderQuickLinks(data.indicator, data.type);
-            
+            const visibleResults = Object.entries(results);
+
             // Sort sources by status (success first, then not_found, then errors)
-            const sortedSources = Object.entries(results).sort(([, a], [, b]) => {
+            const sortedSources = visibleResults.sort(([, a], [, b]) => {
                 const order = { 'success': 0, 'not_found': 1, 'skipped': 2, 'error': 3, 'not_configured': 4 };
                 return (order[a.status] || 5) - (order[b.status] || 5);
             });
@@ -896,11 +1181,13 @@
                 'xforce': 'IBM X-Force',
                 'shodan': 'Shodan',
                 'alienvault': 'AlienVault OTX',
-                'greynoise': 'GreyNoise',
                 'ipinfo': 'IPInfo',
                 'urlhaus': 'URLhaus',
                 'threatfox': 'ThreatFox',
-                'malwarebazaar': 'MalwareBazaar'
+                'malwarebazaar': 'MalwareBazaar',
+                'dshield': 'DShield',
+                'nvd': 'NVD',
+                'osv': 'OSV (Google)'
             };
             
             const statusClass = `status-${result.status.replace('_', '-')}`;
